@@ -8,36 +8,36 @@
 	.global fibonacci
 	.type fibonacci, function
 
+
 fibonacci:
 	@ ADD/MODIFY CODE BELOW
 	@ PROLOG
-	push {r3, r4, r5, lr}
+       stmfd sp!,{r7,r8,lr}
+       mov r7,r0;
+       cmp r7,#1 @check if input arguement x is less or equal(LE) 1
+       beq equal1
+       blt less1
 
-	@ R4 = R0 - 0 (update flags)
-	@ if(R0 <= 0) goto .L3 (which returns 0)
+       sub r0,r7,#1
+       bl fibonacci @call
+       mov r8,r0
 
-	@ Compare R4 wtih 1
-	@ If R4 == 1 goto .L4 (which returns 1)
+       sub r0,r7,#2
+       bl fibonacci @@call
 
-	@ R0 = R4 - 1
-	@ Recursive call to fibonacci with R4 - 1 as parameter
+       add r0,r8,r0;
+       ldmfd sp!,{r7,r8,pc}
 
-	@ R5 = R0
-	@ R0 = R4 - 2
-	@ Recursive call to fibonacci with R4 - 2 as parameter
 
-	@ R0 = R5 + R0 (update flags)
+less1: mov r0,#0
+       ldmfd sp!,{r7,r8,pc}
 
-	pop {r3, r4, r5, pc}		@EPILOG
+equal1: mov r0,#1
+        ldmfd sp!,{r7,r8,pc}
 
-	@ END CODE MODIFICATION
-.L3:
-	mov r0, #0			@ R0 = 0
-	pop {r3, r4, r5, pc}		@ EPILOG
-
-.L4:
-	mov r0, #1			@ R0 = 1
-	pop {r3, r4, r5, pc}		@ EPILOG
-
-	.size fibonacci, .-fibonacci
+       .size fibonacci, .-fibonacci
 	.end
+
+          
+          
+     
